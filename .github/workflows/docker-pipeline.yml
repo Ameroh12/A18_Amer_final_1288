@@ -12,7 +12,7 @@ jobs:
 
     env:
       IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/a18_amer_final_1288"
-      DOCKER_CONTEXT: .
+      BUILD_CONTEXT: .
 
     steps:
       - name: Checkout repository
@@ -45,7 +45,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build "${DOCKER_CONTEXT}" \
+          docker build "${BUILD_CONTEXT}" \
             --tag "${{ env.IMAGE_NAME }}:latest"
 
       - name: Push Docker image
