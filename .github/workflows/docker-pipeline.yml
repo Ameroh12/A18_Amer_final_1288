@@ -1,0 +1,52 @@
+name: A18_Amer_final_1288
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/a18_amer_final_1288"
+      DOCKER_CONTEXT: .
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Compile Java source
+        run: javac DockerDemo.java
+
+      - name: Show directory contents before build
+        run: |
+          if [ -d /app ]; then
+            echo "Listing /app"
+            ls -al /app
+          else
+            echo "/app not available, listing /"
+            ls -al /
+          fi
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build "${DOCKER_CONTEXT}" \
+            --tag "${{ env.IMAGE_NAME }}:latest"
+
+      - name: Push Docker image
+        run: docker push "${{ env.IMAGE_NAME }}:latest"
