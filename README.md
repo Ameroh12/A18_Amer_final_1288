@@ -1,106 +1,47 @@
-# Pipeline CI/CD Docker - Application Java
+# A18_Amer_final_1288
 
-Ce projet démontre un pipeline CI/CD complet pour construire et pousser une image Docker d'une application Java vers Docker Hub.
+Application Java minimale qui écrit `Test des images docker` sur la sortie standard. Le dépôt contient également un Dockerfile et un workflow GitHub Actions permettant de construire et de publier l'image sur Docker Hub.
 
-## 📋 Description
-
-Application Java simple qui affiche "Test des images docker" et est conteneurisée avec Docker.
-
-## 🚀 Structure du Projet
+## Structure
 
 ```
 .
-├── DockerDemo.java          # Application Java principale
-├── Dockerfile               # Configuration Docker
-├── .github/
-│   └── workflows/
-│       └── docker-ci.yml    # Pipeline CI/CD GitHub Actions
+├── DockerDemo.java              # Programme Java simple
+├── Dockerfile                   # Image basée sur Temurin 21
+├── .github/workflows/
+│   └── docker-pipeline.yml      # Workflow GitHub Actions
 └── README.md
 ```
 
-## 🔧 Configuration du Pipeline CI/CD
+## Pipeline GitHub Actions
 
-### Prérequis
+Le workflow `docker-pipeline.yml` fait :
 
-1. **Compte Docker Hub** : Créez un compte sur [hub.docker.com](https://hub.docker.com)
+1. Checkout du dépôt.
+2. Installation de Temurin JDK 21 pour compiler `DockerDemo.java`.
+3. Listing du répertoire `/app` (ou `/` si indisponible) avant le build.
+4. Connexion à Docker Hub via les secrets `DOCKERHUB_USERNAME` et `DOCKERHUB_TOKEN`.
+5. Construction de l'image `ameroh12/a18_amer_final_1288:latest` puis push vers Docker Hub.
 
-2. **Secrets GitHub** : Configurez les secrets suivants dans votre repository GitHub :
-   - Allez dans `Settings` → `Secrets and variables` → `Actions`
-   - Ajoutez les secrets suivants :
-     - `DOCKER_USERNAME` : Votre nom d'utilisateur Docker Hub
-     - `DOCKER_PASSWORD` : Votre token d'accès Docker Hub (ou mot de passe)
+Le workflow est déclenché par tout push sur `main` ou par l'action manuelle `workflow_dispatch`.
 
-### Fonctionnalités du Pipeline
+### Secrets requis
 
-Le pipeline CI/CD (`docker-ci.yml`) effectue les étapes suivantes :
+| Secret | Description |
+| --- | --- |
+| `DOCKERHUB_USERNAME` | Identifiant Docker Hub |
+| `DOCKERHUB_TOKEN` | Token Docker Hub avec droits de push |
 
-1. ✅ **Checkout du code** : Récupère le code source
-2. 📂 **Affichage du contenu** : Affiche le contenu des répertoires `/` et `/app`
-3. 🔧 **Configuration Docker Buildx** : Prépare l'environnement Docker
-4. 🔐 **Login Docker Hub** : Authentification sur Docker Hub
-5. 🏗️ **Build de l'image** : Construit l'image Docker avec deux tags (latest et SHA du commit)
-6. 🧪 **Test de l'image** : Exécute l'image pour vérifier son bon fonctionnement
-7. 🚀 **Push vers Docker Hub** : Pousse l'image sur Docker Hub
-8. 📊 **Détails de l'image** : Affiche les informations sur l'image créée
+## Exécution locale
 
-### Déclenchement du Pipeline
-
-Le pipeline se déclenche automatiquement lors :
-- D'un push sur la branche `main` ou `master`
-- D'une pull request vers `main` ou `master`
-
-## 🏃 Utilisation Locale
-
-### Build de l'image Docker
-
-```bash
-docker build -t java-docker-demo .
-```
-
-### Exécution de l'image
-
-```bash
-docker run --rm java-docker-demo
-```
-
-### Compilation manuelle (sans Docker)
-
-```bash
+```cmd
 javac DockerDemo.java
 java DockerDemo
+
+docker build -t ameroh12/a18_amer_final_1288:latest .
+docker run --rm ameroh12/a18_amer_final_1288:latest
 ```
 
-## 📦 Récupération de l'Image depuis Docker Hub
+## Licence
 
-Une fois le pipeline exécuté avec succès, vous pouvez télécharger et exécuter l'image :
-
-```bash
-docker pull <votre-username>/java-docker-demo:latest
-docker run --rm <votre-username>/java-docker-demo:latest
-```
-
-## 🔄 Workflow GitHub Actions
-
-Le fichier `.github/workflows/docker-ci.yml` contient toute la configuration du pipeline. Il utilise :
-- `actions/checkout@v3` : Pour récupérer le code
-- `docker/setup-buildx-action@v2` : Pour configurer Docker Buildx
-- `docker/login-action@v2` : Pour l'authentification Docker Hub
-
-## 📝 Notes Importantes
-
-- L'image utilise `openjdk:8-jdk-alpine` comme image de base (légère)
-- Le répertoire de travail dans le conteneur est `/app`
-- L'application est compilée lors du build de l'image Docker
-- Deux tags sont créés : `latest` et un tag basé sur le SHA du commit pour la traçabilité
-
-## 🤝 Contribution
-
-1. Forkez le projet
-2. Créez une branche (`git checkout -b feature/amelioration`)
-3. Committez vos changements (`git commit -m 'Ajout d une fonctionnalité'`)
-4. Poussez vers la branche (`git push origin feature/amelioration`)
-5. Ouvrez une Pull Request
-
-## 📄 Licence
-
-Ce projet est fourni à des fins éducatives.
+Projet partagé pour démonstration académique.
